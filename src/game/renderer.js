@@ -1,48 +1,64 @@
 "use strict";
 
-var PIXI = require('pixi.js'),
-    baseWidth = 800, //window.innerWidth,
-    baseHeight = 600; //window.innerHeight;
+var THREE = require('three'),
+    Camera = require('./camera'),
+    isArray = require('is-array'),
+    baseWidth = 800,
+    baseHeight = 600,
+    pixelRatio = (typeof window.devicePixelRatio !== 'undefined' ? window.devicePixelRatio : 1);
 
-var renderer = new PIXI.WebGLRenderer(baseWidth, baseHeight),
-    stage = new PIXI.Container(0x000000),
-    backgroundLayer = new PIXI.Container(),
-    middleLayer = new PIXI.Container(),
-    foregroundLayer = new PIXI.Container();
+var renderer = new THREE.WebGLRenderer({ antialias: true }),
+    camera = new Camera(baseWidth / baseHeight, Math.PI / 8.5, 700),
+    hudCamera = new THREE.OrthographicCamera( - baseWidth / 2, baseWidth / 2, baseHeight / 2, - baseHeight / 2, 1, 10 ),
+    scene = new THREE.Scene(),
+    hudScene = new THREE.Scene();
 
-stage.addChild(backgroundLayer);
-stage.addChild(middleLayer);
-stage.addChild(foregroundLayer);
+hudCamera.position.z = 10;
+
+renderer.setPixelRatio(pixelRatio);
+renderer.setSize(baseWidth, baseHeight);
+renderer.autoClear = false;
+renderer.shadowMapType = THREE.PCFSoftShadowMap;
+renderer.shadowMapEnabled = false;
+renderer.shadowMapCullFace = THREE.CullFaceBack;
 
 module.exports = {
     screenWidth: baseWidth,
     screenHeight: baseHeight,
+    pixelRation: pixelRatio,
     infectDom: function (domElement) {
         if (typeof domElement === 'string') {
             domElement = document.getElementById(domElement);
         }
 
-        domElement.appendChild(renderer.view);
+        domElement.appendChild(renderer.domElement);
     },
-    addElement: function (element) {
-        middleLayer.addChild(element);
+    addMultipleToScene: function (objects) {
+        for(var i = 0; i < objects.length; i++) {
+            scene.add(objects[i]);
+        }
     },
-    removeElement: function (element) {
-        middleLayer.removeChild(element);
-    },
-    addElementToForeground: function (element) {
-        foregroundLayer.addChild(element);
-    },
-    removeElementFromForeground: function (element) {
-        foregroundLayer.removeChild(element);
-    },
-    addElementToBackground: function (element) {
-        backgroundLayer.addChild(element);
-    },
-    removeElementFromBackground: function (element) {
-        backgroundLayer.removeChild(element);
+    addToScene: function (object) {
+        if (isArray(object)) {
+            this.addMultipleToScene(object);
+        } else {
+            scene.add(object);
+        }
     },
     render: function () {
-        renderer.render(stage);
+        camera.update();
+        renderer.clear();
+        renderer.render( scene, camera );
+        renderer.clearDepth();
+        renderer.render( hudScene, hudCamera );
+    },
+    shakeCamera: function (duration, strength) {
+        camera.shake(duration, strength);
+    },
+    lockCamera: function (object) {
+        camera.followOneTarget(object);
+    },
+    unlockCamera: function () {
+        camera.stopFollowing();
     }
 };

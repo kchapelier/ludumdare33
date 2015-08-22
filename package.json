@@ -11,7 +11,9 @@
   "author": "Kevin Chapelier",
   "license": "MIT",
   "dependencies": {
+    "chroma-js": "^1.1.1",
     "howler": "^1.1.26",
+    "is-array": "^1.0.1",
     "localforage": "^1.2.7",
     "mathp": "^1.4.0",
     "migl-gameloop": "^1.1.0",
@@ -20,8 +22,7 @@
     "migl-rng": "^1.0.0",
     "numeral": "^1.5.3",
     "p2": "^0.7.0",
-    "pixi.js": "^3.0.7",
-    "victor": "^0.2.6"
+    "three": "^0.70.1"
   },
   "devDependencies": {
     "gulp": "^3.9.0",
