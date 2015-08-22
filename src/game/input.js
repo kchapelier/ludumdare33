@@ -5,7 +5,11 @@ var Input = require('migl-input');
 var input = new Input({
     action: {
         keys: ['<space>', 'X', '<pad1-button3>'],
-        group: 'shoot'
+        group: 'action'
+    },
+    roll: {
+        keys: ['<shift>', '<pad1-button4>'],
+        group: 'roll'
     },
     up: {
         keys: ['<up>', 'W', '<pad1-button13>', '<pad1-axis2-negative>'],

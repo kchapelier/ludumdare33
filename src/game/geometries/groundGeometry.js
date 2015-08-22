@@ -18,17 +18,17 @@ module.exports = {
                 vy = vertex.y - y;
 
             var mirroredDisp = (1 + rng.perlin2(vy / 729, vx / 703) * 2.),
-                globalDisp = (rng.perlin2(vy / 1425, vx / 1389) * 330.);
+                globalDisp = (rng.perlin2(vy / 1825, vx / 1789) * 500.);
 
             vertex.add(new THREE.Vector3(
-                (rng.perlin2(vx / 17, vy / 21)) * 10.,
-                (rng.perlin2(vx / 31, vy / 11)) * 10.,
+                (rng.perlin2(vx / 17, vy / 21)) * 30.,
+                (rng.perlin2(vx / 31, vy / 11)) * 30.,
                 globalDisp + mirroredDisp * Math.pow(rng.perlin2(vy / 327, vx / 333), 2) * 350.
             ));
 
             cloneVertex.add(new THREE.Vector3(
-                (rng.perlin2(vx / 21, vy / 17)) * 10.,
-                (rng.perlin2(vx / 11, vy / 31)) * 10.,
+                (rng.perlin2(vx / 21, vy / 17)) * 30.,
+                (rng.perlin2(vx / 11, vy / 31)) * 30.,
                 globalDisp + mirroredDisp * Math.pow(rng.perlin2(vy / 333, vx / 327), 2) * 450 * -1.
             ));
         }

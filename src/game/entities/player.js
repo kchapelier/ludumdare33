@@ -1,14 +1,20 @@
 "use strict";
 
 var THREE = require('three'),
-    input = require('./../input');
+    PlayerShot = require('./playerShot'),
+    objectCollection = require('./../objectCollection'),
+    input = require('./../input'),
+    helpers = require('./../helpers');
 
 var leftCommand = input.commands.left,
     rightCommand = input.commands.right,
     upCommand = input.commands.up,
-    downCommand = input.commands.down;
+    downCommand = input.commands.down,
+    actionCommand = input.commands.action,
+    rollCommand = input.commands.roll;
 
-var Player = function () {
+var Player = function (rng) {
+    this.rng = rng;
     this.timer = 0;
     this.group = new THREE.Group();
 
@@ -18,6 +24,11 @@ var Player = function () {
 
     this.direction = new THREE.Vector3(0,0,-3);
     this.intentAngle = 0;
+    this.moveAngle = 0;
+
+    this.rollingTimer = 0;
+    this.rolling = false;
+    this.rollingDirection = 0;
 
     var cube = new THREE.Mesh(
         new THREE.BoxGeometry(20, 20, 20),
@@ -31,36 +42,72 @@ var Player = function () {
 };
 
 Player.prototype.handleInputs = function (dt) {
-    if (leftCommand.active) {
-        this.intentAngle+= leftCommand.value * dt / 200;
-    } else if (rightCommand.active) {
-        this.intentAngle+= -rightCommand.value * dt / 200;
+    this.firing = actionCommand.down;
+
+    if (this.rollingTimer <= 0) {
+        this.rolling = (rollCommand.active && (leftCommand.active || rightCommand.active));
+
+        if (this.rolling) {
+            this.rollingDirection = leftCommand.active ? -1 : 1;
+            this.rollingTimer = 400;
+            //stopping the rotation on y
+            this.moveAngle = this.moveAngle * 0.8 + 0 * 0.2;
+            //keeping the previous speed seems more usable
+            //this.decelerating = false;
+            //this.accelerating = false;
+        } else {
+            var newMoveAngle;
+
+            if (leftCommand.active) {
+                newMoveAngle = leftCommand.value * dt / 200;
+            } else if (rightCommand.active) {
+                newMoveAngle = -rightCommand.value * dt / 200;
+            } else {
+                newMoveAngle = 0;
+            }
+
+            this.moveAngle = this.moveAngle * 0.85 + newMoveAngle * 0.15;
+
+            this.decelerating = false;
+            this.accelerating = false;
+
+            if (upCommand.active) {
+                this.accelerating = true;
+            } else if (downCommand.active) {
+                this.decelerating = true;
+            }
+        }
     } else {
-        //this.intentAngle = this.intentAngle * 0.85;
-    }
-
-    this.decelerating = false;
-    this.accelerating = false;
-
-    if (upCommand.active) {
-        this.accelerating = true;
-    } else if (downCommand.active) {
-        this.decelerating = true;
+        this.rollingTimer-= dt;
     }
 };
 
-var yAxis = new THREE.Vector3(0, 1, 0);
+var xAxis = new THREE.Vector3(1, 0, 0),
+    yAxis = new THREE.Vector3(0, 1, 0),
+    zAxis = new THREE.Vector3(0, 0, 1);
 
 Player.prototype.move = function (dt) {
-    /*
+    if (this.stopTimer > 0) {
+        this.stopTimer -= dt;
+    } else if (this.rolling) {
+        var vectorRoll = new THREE.Vector3(this.rollingDirection * 2 * dt, 0, 0);
+        vectorRoll.applyMatrix4(new THREE.Matrix4().makeRotationY(this.intentAngle));
+        this.position.add(vectorRoll);
+
+        if (this.rollingTimer <= 0) {
+            this.stopTimer = 90;
+        }
+    }
+
+    /* */
     var speed = 9;
 
     if (this.accelerating) {
-        speed+=5.5;
+        speed+=6.3;
     } else if(this.decelerating) {
-        speed-=12;
+        speed-=14;
     }
-    */
+    /*/
 
     var speed = 0;
 
@@ -69,6 +116,9 @@ Player.prototype.move = function (dt) {
     } else if(this.decelerating) {
         speed-=12;
     }
+    /* */
+
+    this.intentAngle = this.intentAngle + this.moveAngle;
 
     this.direction.set(0,0,-1);
     this.direction.applyAxisAngle(yAxis, this.intentAngle);
@@ -78,11 +128,37 @@ Player.prototype.move = function (dt) {
 
     this.rotation.x = 0;
     this.rotation.y = (this.intentAngle);
+    this.rotation.z = (Math.cos(this.timer / 3037) * 0.02);
+
+    if (this.rolling) {
+        this.rotation.z = Math.pow(Math.abs(Math.sin((this.rollingTimer - 400) / 400 * Math.PI)), 0.4) * this.rollingDirection / -4.; // yeah, seems about right.
+    } else {
+        this.rotation.z += this.moveAngle * 2.;
+    }
+
+    this.position.y = Math.sin(this.timer / 1537) * 13 + 232 + helpers.getGlobalDisplacementAtPoint(this.position.x, this.position.z, this.rng);
+
+};
+
+Player.prototype.fire = function (dt) {
+    if (this.firing) {
+        var shot = new PlayerShot();
+
+        shot.position.copy(this.position);
+        shot.position.y -= 40;
+
+        shot.direction.set(0,0,-4);
+        shot.direction.applyMatrix4(new THREE.Matrix4().makeRotationY(this.intentAngle));
+
+        objectCollection.add('playerShot', shot);
+    }
+
 };
 
 Player.prototype.update = function (dt) {
     this.timer += dt;
     this.handleInputs(dt);
+    this.fire(dt);
     this.move(dt);
     this.light.intensity = 0.5 + Math.pow((1 + Math.cos(this.timer / 400)) / 2, 3) * 5.5;
 };

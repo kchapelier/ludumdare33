@@ -123,7 +123,7 @@ void main( void ) {
         cos(position.x * 6. + time / 2000.) * (dist + sin(position.y) / 1.)
     )) * 0.75;
 
-    noise = noise/snoise(vec2(position.y * 10. + cos(time / 1000.), position.x * 10. + sin(time / 1000.)));
+    noise = noise/snoise(vec2(position.y * 10. + cos(time / 2000.), position.x * 10. + sin(time / 2000.)));
 
     float grey = (1. - dist * 2.) * clamp(pow(noise * 1.4, 0.85), 0.0, 1.0) * 2.;
 

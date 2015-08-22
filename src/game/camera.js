@@ -77,6 +77,7 @@ Camera.prototype.update = function () {
 
     this.rotation.y = this.target.rotation.y;
     this.rotation.x = this.target.rotation.x;
+    this.rotation.z = this.target.rotation.z;
     this.position.z = this.offsetZ;
     this.position.y = this.offsetY;
 
