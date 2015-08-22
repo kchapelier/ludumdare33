@@ -8,7 +8,8 @@ var tileWidth = 1000,
 var groundMaterial = new THREE.MeshLambertMaterial({
     vertexColors: THREE.FaceColors,
     fog: true,
-    shading: THREE.NoShading
+    shading: THREE.NoShading,
+    side: THREE.DoubleSide //FIXME this should not be used, this is a bug in groundGeometry
 });
 
 var Ground = function (rng) {

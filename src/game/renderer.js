@@ -8,7 +8,7 @@ var THREE = require('three'),
     pixelRatio = (typeof window.devicePixelRatio !== 'undefined' ? window.devicePixelRatio : 1);
 
 var renderer = new THREE.WebGLRenderer({ antialias: true }),
-    camera = new Camera(baseWidth / baseHeight, Math.PI / 8.5, 700),
+    camera = new Camera(baseWidth / baseHeight, Math.PI / 10.5, 0),
     hudCamera = new THREE.OrthographicCamera( - baseWidth / 2, baseWidth / 2, baseHeight / 2, - baseHeight / 2, 1, 10 ),
     scene = new THREE.Scene(),
     hudScene = new THREE.Scene();
@@ -21,6 +21,8 @@ renderer.autoClear = false;
 renderer.shadowMapType = THREE.PCFSoftShadowMap;
 renderer.shadowMapEnabled = false;
 renderer.shadowMapCullFace = THREE.CullFaceBack;
+
+scene.fog = new THREE.FogExp2( 0x000000, 0.00045 );
 
 module.exports = {
     screenWidth: baseWidth,

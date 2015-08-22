@@ -48,10 +48,10 @@ Camera.prototype.calculateOffsets = function () {
     this.offsetY = Math.sin(this.angle) * this.distance;
     this.offsetZ = Math.cos(this.angle) * this.distance;
     this.offsetX = this.speed.x * 3;
-    this.rotation.y = -this.speed.x / 175;
-    this.rotation.z = -this.speed.x / 400;
 
-    this.updateProjectionMatrix();
+    //this.rotation.x = this.target.rotation.y;
+
+
 };
 
 Camera.prototype.stopFollowing = function () {
@@ -75,7 +75,8 @@ Camera.prototype.setSpeed = function (speed) {
 Camera.prototype.update = function () {
     this.calculateOffsets();
 
-    this.rotation.x = -this.angle;
+    this.rotation.y = this.target.rotation.y;
+    this.rotation.x = this.target.rotation.x;
     this.position.z = this.offsetZ;
     this.position.y = this.offsetY;
 
@@ -96,9 +97,11 @@ Camera.prototype.update = function () {
         }
 
         this.position.z = this.target.position.z + this.offsetZ;
-        this.position.y = this.target.position.y / 1.2 + this.offsetY + this.shakeOffsetY; // should probably be positionned relative to the ground level instead of the target level
+        this.position.y = this.target.position.y + this.offsetY + this.shakeOffsetY; // should probably be positionned relative to the ground level instead of the target level
         this.position.x = this.target.position.x + this.offsetX + this.shakeOffsetX;
     }
+
+    this.updateProjectionMatrix();
 };
 
 Camera.prototype.shake = function (duration, strength) {
