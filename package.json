@@ -1,0 +1,32 @@
+{
+  "name": "ludumdare33",
+  "version": "0.0.1",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "check": "gulp codestyle && gulp lint",
+    "build": "browserify src/main.js -d --s main -u crypto > build/main.js",
+    "watch": "watchify src/main.js --s main -u crypto -o build/main.js -v"
+  },
+  "author": "Kevin Chapelier",
+  "license": "MIT",
+  "dependencies": {
+    "howler": "^1.1.26",
+    "localforage": "^1.2.7",
+    "mathp": "^1.4.0",
+    "migl-gameloop": "^1.1.0",
+    "migl-input": "^2.0.0",
+    "migl-pool": "^1.0.0",
+    "migl-rng": "^1.0.0",
+    "numeral": "^1.5.3",
+    "p2": "^0.7.0",
+    "pixi.js": "^3.0.7",
+    "victor": "^0.2.6"
+  },
+  "devDependencies": {
+    "gulp": "^3.9.0",
+    "gulp-jscs": "^2.0.0",
+    "gulp-jshint": "^1.11.2",
+    "jshint-stylish": "^2.0.1"
+  }
+}
