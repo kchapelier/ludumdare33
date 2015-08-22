@@ -1,0 +1,38 @@
+<html>
+<head>
+    <title>..., a game for Ludum Dare 33</title>
+    <style>
+        body, html {
+            min-height : 100%;
+            overflow: hidden;
+        }
+        body {
+            margin : 0;
+            padding : 0;
+            background: #CCC;
+            height: 100%;
+        }
+        #title {
+            display:none;
+        }
+        #game {
+            position:relative;
+            margin: -300px 0 0 -400px;
+            top : 50%;
+            left : 50%;
+            width : 800px;
+            height : 600px;
+            box-shadow: 0px 0px 50px #333, 0px 0px 100px #444;
+            overflow:hidden;
+        }
+    </style>
+</head>
+<body>
+<h1 id="title">...</h1>
+<div id="game"></div>
+<script src="build/main.js"></script>
+<script>
+    window.onload = main;
+</script>
+</body>
+</html>

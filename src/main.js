@@ -1,5 +1,10 @@
 "use strict";
 
-var game = require('./game/game');
+var game = require('./game/game'),
+    fontLoader = require('./lib/fontLoader');
 
-game.initialize();
+module.exports = function () {
+    fontLoader(['Economica:700,400'], function () {
+        game.initialize();
+    });
+};
