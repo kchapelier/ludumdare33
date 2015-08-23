@@ -26,6 +26,7 @@ var Player = function (rng) {
     this.intentAngle = 0;
     this.moveAngle = 0;
 
+    this.stopTimer = 0;
     this.rollingTimer = 0;
     this.rolling = false;
     this.rollingDirection = 0;
@@ -45,13 +46,13 @@ Player.prototype.handleInputs = function (dt) {
     this.firing = actionCommand.down;
 
     if (this.rollingTimer <= 0) {
-        this.rolling = (rollCommand.active && (leftCommand.active || rightCommand.active));
+        this.rolling = this.stopTimer <= 0 && (rollCommand.active && (leftCommand.active || rightCommand.active));
 
         if (this.rolling) {
             this.rollingDirection = leftCommand.active ? -1 : 1;
             this.rollingTimer = 400;
             //stopping the rotation on y
-            this.moveAngle = this.moveAngle * 0.8 + 0 * 0.2;
+            this.moveAngle = this.moveAngle * 0.5;
             //keeping the previous speed seems more usable
             //this.decelerating = false;
             //this.accelerating = false;
@@ -95,7 +96,7 @@ Player.prototype.move = function (dt) {
         this.position.add(vectorRoll);
 
         if (this.rollingTimer <= 0) {
-            this.stopTimer = 90;
+            this.stopTimer = 250;
         }
     }
 
