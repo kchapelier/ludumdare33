@@ -1,6 +1,7 @@
 "use strict";
 
-var THREE = require('three');
+var THREE = require('three'),
+    SPE = require('./../../lib/shaderParticleEngine/shaderParticleEngine');
 
 var shaderMaterial = new THREE.ShaderMaterial({
     attributes: {},
@@ -154,6 +155,31 @@ var Nest = function () {
     mesh.position.y = 200;
     this.group.add(mesh);
 
+    /*
+    this.particles = new SPE.Group({
+        texture: THREE.ImageUtils.loadTexture('./assets/images/particle.png'),
+        maxAge: 200,
+        hasPerspective: true,
+        colorize: true
+    });
+
+    this.particles.addEmitter(new SPE.Emitter({
+        position: new THREE.Vector3(0, 0, -400),
+        positionSpread: new THREE.Vector3( 0, 0, 0 ),
+        acceleration: new THREE.Vector3(0, -0.1, 0),
+        accelerationSpread: new THREE.Vector3( 0.1, 0, 0.1 ),
+        velocity: new THREE.Vector3(0, 5, 0),
+        velocitySpread: new THREE.Vector3(2, 1, 2),
+        colorStart: new THREE.Color('white'),
+        colorEnd: new THREE.Color('blue'),
+        sizeStart: 100,
+        sizeEnd: 100,
+        particleCount: 2000
+    }));
+
+    this.group.add(this.particles.mesh);
+    this.particles.mesh.frustumCulled = false;
+    */
 
     //this.group.add(new THREE.ArrowHelper(new THREE.Vector3(0, -1, 0), new THREE.Vector3(0, 9999, 0), 9999));
 };
@@ -165,6 +191,7 @@ Nest.prototype.positionBetween = function (position1, position2) {
 Nest.prototype.update = function (dt) {
     this.timer += dt;
     shaderMaterial.uniforms.time.value = this.timer;
+    this.particles.tick(dt / 100);
 };
 
 module.exports = Nest;
