@@ -191,7 +191,7 @@ Nest.prototype.positionBetween = function (position1, position2) {
 Nest.prototype.update = function (dt) {
     this.timer += dt;
     shaderMaterial.uniforms.time.value = this.timer;
-    this.particles.tick(dt / 100);
+    //this.particles.tick(dt / 100);
 };
 
 module.exports = Nest;

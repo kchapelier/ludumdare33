@@ -18,9 +18,6 @@ hudCamera.position.z = 10;
 renderer.setPixelRatio(pixelRatio);
 renderer.setSize(baseWidth, baseHeight);
 renderer.autoClear = false;
-//renderer.shadowMapType = THREE.PCFSoftShadowMap;
-//renderer.shadowMapEnabled = false;
-//renderer.shadowMapCullFace = THREE.CullFaceBack;
 
 var aimMaterial = new THREE.SpriteMaterial({
     map: THREE.ImageUtils.loadTexture( "assets/images/aim.png" ),
@@ -66,7 +63,7 @@ module.exports = {
         camera.update();
         renderer.clear();
         renderer.render( scene, camera );
-        renderer.clearDepth();
+        renderer.clear(false, true, false);
         renderer.render( hudScene, hudCamera );
     },
     shakeCamera: function (duration, strength) {
