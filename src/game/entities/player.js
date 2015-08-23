@@ -3,6 +3,7 @@
 var THREE = require('three'),
     PlayerShot = require('./playerShot'),
     objectCollection = require('./../objectCollection'),
+    enemies = objectCollection.getArray('enemy'),
     input = require('./../input'),
     helpers = require('./../helpers');
 
@@ -26,6 +27,7 @@ var Player = function (rng) {
     this.intentAngle = 0;
     this.moveAngle = 0;
 
+    this.fireTimer = 0;
     this.stopTimer = 0;
     this.rollingTimer = 0;
     this.rolling = false;
@@ -36,14 +38,16 @@ var Player = function (rng) {
         new THREE.MeshNormalMaterial()
     );
 
+    cube.userData.player = this;
+
     this.group.add(cube);
 
-    this.light = new THREE.PointLight(0x882200, 1.3, 1000);
+    this.light = new THREE.PointLight(0x882200, 1.3, 850);
     this.group.add(this.light);
 };
 
 Player.prototype.handleInputs = function (dt) {
-    this.firing = actionCommand.down;
+    this.firing = actionCommand.active;
 
     if (this.rollingTimer <= 0) {
         this.rolling = this.stopTimer <= 0 && (rollCommand.active && (leftCommand.active || rightCommand.active));
@@ -142,18 +146,56 @@ Player.prototype.move = function (dt) {
 };
 
 Player.prototype.fire = function (dt) {
-    if (this.firing) {
+    var self = this;
+
+    if (this.firing && this.fireTimer <= 0) {
+
+        // autotargeting, find the closest enemy relative to the aim
+
+        var minWeight = 0.5,
+            target = null;
+
+        enemies.forEach(function (enemy) {
+            var distance,
+                angle;
+
+            distance = enemy.position.distanceTo(self.position);
+
+            if (distance < 4000) {
+                var vectorToEnemy = enemy.position.clone().sub(self.position),
+                    normalShotDirection = new THREE.Vector3(0,0,-1).applyMatrix4(new THREE.Matrix4().makeRotationY(self.intentAngle));
+
+                var angleDifference = vectorToEnemy.angleTo(normalShotDirection);
+
+                if (angleDifference < 1) {
+                    var weight = angleDifference + distance / 8000;
+
+                    if (weight < minWeight) {
+                        minWeight = weight;
+                        target = enemy;
+                    }
+                }
+            }
+        });
+
         var shot = new PlayerShot();
 
         shot.position.copy(this.position);
         shot.position.y -= 40;
 
-        shot.direction.set(0,0,-4);
-        shot.direction.applyMatrix4(new THREE.Matrix4().makeRotationY(this.intentAngle));
+        if (target) {
+            shot.direction.copy(target.position).sub(shot.position).setLength(4)
+        } else {
+            shot.direction.set(0,0.05,-4);
+            shot.direction.applyMatrix4(new THREE.Matrix4().makeRotationY(this.intentAngle));
+        }
 
         objectCollection.add('playerShot', shot);
+
+        this.fireTimer = 120;
     }
 
+    this.fireTimer -= dt;
 };
 
 Player.prototype.update = function (dt) {
@@ -161,7 +203,7 @@ Player.prototype.update = function (dt) {
     this.handleInputs(dt);
     this.fire(dt);
     this.move(dt);
-    this.light.intensity = 0.5 + Math.pow((1 + Math.cos(this.timer / 400)) / 2, 3) * 5.5;
+    this.light.intensity = 0.5 + Math.pow((1 + Math.cos(this.timer / 400)) / 2, 3) * 6.5;
 };
 
 Player.prototype.postUpdate = function (dt) {

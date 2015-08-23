@@ -27,4 +27,12 @@ collection.on('remove.enemy', function (element) {
     renderer.removeFromScene(element.group);
 });
 
+collection.on('add.enemyShot', function (element) {
+    renderer.addToScene(element.group);
+});
+
+collection.on('remove.enemyShot', function (element) {
+    renderer.removeFromScene(element.group);
+});
+
 module.exports = collection;

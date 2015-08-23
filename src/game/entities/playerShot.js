@@ -41,7 +41,7 @@ PlayerShot.prototype.update = function (dt, rng) {
 };
 
 PlayerShot.prototype.isDead = function () {
-    return this.timer >= 1000;
+    return this.timer >= 2000;
 };
 
 module.exports = PlayerShot;

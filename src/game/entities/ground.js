@@ -19,8 +19,8 @@ var Ground = function (rng) {
 
 
 
-Ground.prototype.addTile = function (x, y) {
-    var geometry = groundGeometry.generate(tileWidth, tileHeight, x * tileWidth, y * tileHeight, this.rng);
+Ground.prototype.addTile = function (x, y, wallOnLeft, wallOnRight, wallOnFront, wallOnBottom) {
+    var geometry = groundGeometry.generate(tileWidth, tileHeight, x * tileWidth, y * tileHeight, this.rng, wallOnLeft, wallOnRight, wallOnFront, wallOnBottom);
 
     var tile = new THREE.Mesh(
         geometry,

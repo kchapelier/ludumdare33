@@ -7,11 +7,34 @@ var THREE = require('three'),
     baseHeight = 600,
     pixelRatio = (typeof window.devicePixelRatio !== 'undefined' ? window.devicePixelRatio : 1);
 
+var EffectComposer = require('../lib/three-postprocessing/effectComposer'),
+    RenderPass = require('../lib/three-postprocessing/renderPass'),
+    ShaderPass = require('../lib/three-postprocessing/shaderPass'),
+    EdgeShader2 = require('../lib/three-postprocessing/shaders/edgeShader2'),
+    VibranceShader = require('../lib/three-postprocessing/shaders/vibranceShader'),
+    GammaShader = require('../lib/three-postprocessing/shaders/gammaShader'),
+    FXAAShader = require('../lib/three-postprocessing/shaders/fxaaShader');
+
 var renderer = new THREE.WebGLRenderer({ antialias: true, maxLights: 10 }),
     camera = new Camera(baseWidth / baseHeight, Math.PI / 10.5, 0),
     hudCamera = new THREE.OrthographicCamera( - baseWidth*pixelRatio / 2, baseWidth*pixelRatio / 2, baseHeight*pixelRatio / 2, - baseHeight*pixelRatio / 2, 0.1, 100),
     scene = new THREE.Scene(),
     hudScene = new THREE.Scene();
+
+var composer = new EffectComposer( renderer );
+composer.setSize(baseWidth * pixelRatio, baseHeight * pixelRatio);
+var pass = new RenderPass( scene, camera );
+composer.addPass( pass );
+
+
+var effect = new ShaderPass( VibranceShader );
+effect.uniforms[ 'amount' ].value = -0.8;
+composer.addPass( effect );
+
+var effect = new ShaderPass( FXAAShader );
+effect.uniforms[ 'resolution' ].value = new THREE.Vector2(1/(baseWidth * pixelRatio), 1/(baseHeight * pixelRatio));
+effect.renderToScreen = true;
+composer.addPass( effect );
 
 hudCamera.position.z = 10;
 
@@ -61,10 +84,15 @@ module.exports = {
     },
     render: function () {
         camera.update();
+        /* /
+        composer.render();
+        /*/
         renderer.clear();
         renderer.render( scene, camera );
+        /* */
         renderer.clear(false, true, false);
         renderer.render( hudScene, hudCamera );
+
     },
     shakeCamera: function (duration, strength) {
         camera.shake(duration, strength);
