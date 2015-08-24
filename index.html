@@ -1,6 +1,6 @@
 <html>
 <head>
-    <title>..., a game for Ludum Dare 33</title>
+    <title>Subterranean, a game for Ludum Dare 33</title>
     <style>
         body, html {
             min-height : 100%;
@@ -25,11 +25,73 @@
             box-shadow: 0px 0px 100px #091809;
             overflow:hidden;
         }
+
+        .info {
+            font-family:Arial, "Times New Roman", "Bitstream Charter", Times, serif;
+            padding:20px;
+            color: white;
+            letter-spacing:1px;
+        }
+
+        .info h2 {
+            font-size:40px;
+            font-weight:normal;
+            margin-bottom:0px;
+        }
+        .info h3 {
+            font-size:18px;
+            font-weight:normal;
+            margin-top:0px;
+        }
+        .info p {
+            font-size:13px;
+            font-weight:normal;
+            margin:30px 0;
+        }
+
+        .info a, .info a:visited {
+            font-weight:bold;
+            font-size:19px;
+            text-decoration: none;
+            color:darkgreen;
+        }
+
+        #gameOverScreen {
+            display:none;
+            position:absolute;
+            background:rgba(0,0,0,0.5);
+        }
+
     </style>
 </head>
 <body>
-<h1 id="title">...</h1>
-<div id="game"></div>
+<h1 id="title">Subterranean</h1>
+<div id="game">
+    <div id="startGame" class="info">
+        <h2>Subterranean,</h2>
+        <h3>a game made in 2 days for Ludum Dare 33</h3>
+
+        <p>
+            WASD, dpad or first stick to move.<br />
+            X, space or button 3 to shoot.<br />
+            shift or button 4 + left or right to dodge.
+        </p>
+
+        <a href="#" id="playButton">Play</a>
+    </div>
+    <div id="gameOverScreen" class="info">
+        <p>Your nest has been defiled.</p>
+    </div>
+</div>
+<script>
+    (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+        (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+            m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+    })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+    ga('create', 'UA-60237015-1', 'auto');
+    ga('send', 'pageview');
+</script>
 <script src="build/main.js"></script>
 <script>
     window.onload = main;

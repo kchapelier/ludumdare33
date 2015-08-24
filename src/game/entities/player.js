@@ -15,6 +15,7 @@ var leftCommand = input.commands.left,
     rollCommand = input.commands.roll;
 
 var Player = function (rng) {
+    this.life = 3;
     this.rng = rng;
     this.timer = 0;
     this.group = new THREE.Group();
@@ -34,7 +35,7 @@ var Player = function (rng) {
     this.rollingDirection = 0;
 
     var cube = new THREE.Mesh(
-        new THREE.BoxGeometry(20, 20, 20),
+        new THREE.BoxGeometry(100, 100, 100),
         new THREE.MeshNormalMaterial()
     );
 
@@ -204,10 +205,32 @@ Player.prototype.update = function (dt) {
     this.fire(dt);
     this.move(dt);
     this.light.intensity = 0.5 + Math.pow((1 + Math.cos(this.timer / 400)) / 2, 3) * 6.5;
+
+    //quick hack
+
+    if (this.position.x > 8300) {
+        this.position.x = 8300;
+    }
+
+    if (this.position.x < -8300) {
+        this.position.x = -8300;
+    }
+
+    if (this.position.z > 8300) {
+        this.position.z = 8300;
+    }
+
+    if (this.position.z < -8300) {
+        this.position.z = -8300;
+    }
 };
 
 Player.prototype.postUpdate = function (dt) {
 
+};
+
+Player.prototype.isDead = function (dt) {
+    return this.life < 0;
 };
 
 module.exports = Player;

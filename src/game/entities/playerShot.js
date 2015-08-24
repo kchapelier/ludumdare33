@@ -7,7 +7,7 @@ var geometry = new THREE.SphereGeometry(20, 10, 10);
 
 var material = new THREE.MeshLambertMaterial({
     color: 0x55FF22,
-    emissiveColor: 0xFFFF00,
+    emissive: 0xCC8800,
     shading: THREE.SmoothShading,
     fog: false
 });

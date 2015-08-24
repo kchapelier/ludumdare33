@@ -31,7 +31,10 @@ var rayCaster = new THREE.Raycaster();
 
 var init = function init () {
 
-    var player = new Player(rng);
+    var player = new Player(rng),
+        timerSpawn = null;
+
+    var stop = false;
 
     player.position.y = helpers.getGlobalDisplacementAtPoint(0, 0, rng);
 
@@ -67,7 +70,7 @@ var init = function init () {
         }
     }
 
-    for (var i = 0; i < 10; i++) {
+    var spawnNewEnemy = function () {
         var x = (Math.random() - 0.5) * 2 * 8000,
             y = (Math.random() - 0.5) * 2 * 8000;
 
@@ -78,7 +81,13 @@ var init = function init () {
         enemy.position.y = helpers.getGlobalDisplacementAtPoint(x, y, rng);
 
         objectCollection.add('enemy', enemy);
+    };
+
+    for (var i = 0; i < 3; i++) {
+        spawnNewEnemy();
     }
+
+    timerSpawn = setInterval(spawnNewEnemy, 1500);
 
     var musicPlaying = sound.play('music');
 
@@ -89,6 +98,8 @@ var init = function init () {
     renderer.lockCamera(player.group);
 
     loop.update = function (dt) {
+        if (stop) return;
+
         input.update(dt);
         player.update(dt);
         nest.update(dt);
@@ -148,8 +159,13 @@ var init = function init () {
             if (collisions.length) {
                 if (collisions[0].object.userData.player) {
                     var collidedPlayer = collisions[0].object.userData.player;
-                    renderer.shakeCamera(10, 15);
-                    sound.play('hit02');
+
+                    if (!collidedPlayer.rolling) { //invicible while rolling, that's the point
+                        renderer.shakeCamera(10, 18);
+                        sound.play('hit02');
+                        collidedPlayer.life--;
+                    }
+
                 } else {
                     //console.log('ground !');
                 }
@@ -184,11 +200,22 @@ var init = function init () {
     };
 
     loop.postUpdate = function (dt) {
+        if (stop) return;
+
         player.postUpdate(dt);
 
+        if (player.life < 0) {
+            loop.stop();
+            stop = true;
+
+            var gameOverScreen = document.getElementById('gameOverScreen');
+            gameOverScreen.style.display = 'block';
+        }
     };
 
     loop.render = function (dt) {
+        if (stop) return;
+
         renderer.render(dt);
     };
 

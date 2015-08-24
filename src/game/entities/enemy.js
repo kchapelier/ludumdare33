@@ -5,26 +5,30 @@ var THREE= require('three'),
     objectCollection = require('./../objectCollection'),
     helpers = require('./../helpers');
 
-var geometry = new THREE.BoxGeometry(100, 100, 100);
+var jsonLoader = new THREE.JSONLoader();
 
-var material = new THREE.MeshNormalMaterial(material);
+var geometry = jsonLoader.parse(require('./../models/ldjam02'), null).geometry;
+
+var material = new THREE.MeshPhongMaterial({
+    color: 0x00FF33,
+    specular:0x00FF88,
+    shading: THREE.NoShading,
+    shininess: 100,
+    metal: true
+});
 
 var Enemy = function () {
     this.timer = 0;
-    this.life = 5;
+    this.life = 3;
     this.group = new THREE.Group();
     this.position = this.group.position;
     this.intentAngle = 0;
-    this.knockback = new THREE.Vector3(0, 0, 0)
+    this.knockback = new THREE.Vector3(0, 0, 0);
 
-    this.meshes = [];
-
-    for (var i = 0; i < 10; i++) {
-        var mesh = new THREE.Mesh(geometry, material);
-        this.group.add(mesh);
-        mesh.userData.enemy = this;
-        this.meshes.push(mesh);
-    }
+    var mesh = new THREE.Mesh(geometry, material);
+    this.group.add(mesh);
+    mesh.userData.enemy = this;
+    mesh.scale.set(40,40,40)
 };
 
 Enemy.prototype.applyKnockback = function (direction, multiplier) {
@@ -85,6 +89,23 @@ Enemy.prototype.update = function (dt, rng, player) {
     this.group.position.y = 230 + helpers.getGlobalDisplacementAtPoint(this.group.position.x, this.group.position.z, rng);
 
 
+    //quick hack
+
+    if (this.position.x > 8300) {
+        this.position.x = 8300;
+    }
+
+    if (this.position.x < -8300) {
+        this.position.x = -8300;
+    }
+
+    if (this.position.z > 8300) {
+        this.position.z = 8300;
+    }
+
+    if (this.position.z < -8300) {
+        this.position.z = -8300;
+    }
 };
 
 Enemy.prototype.isDead = function () {

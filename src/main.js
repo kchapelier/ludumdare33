@@ -2,4 +2,11 @@
 
 var game = require('./game/game');
 
-game.initialize();
+var button = document.getElementById('playButton'),
+    intro = document.getElementById('startGame');
+
+
+button.addEventListener('click', function () {
+    intro.style.display = 'none';
+    game.initialize();
+});
