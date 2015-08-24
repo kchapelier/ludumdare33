@@ -16,7 +16,7 @@ var THREE = require('three'),
 var loadSounds = function loadSounds () {
     sound.load('music', 'music/chromad-ozone', 1, true, true);
     sound.load('hit01', 'effects/chord01', 0.7, false, false);
-    sound.load('hit02', 'effects/chord02', 0.7, false, false);
+    sound.load('hit02', 'effects/chord02', 0.8, false, false);
     sound.load('hit03', 'effects/clay01', 0.7, false, false);
     sound.load('hit04', 'effects/clay02', 0.7, false, false);
     sound.load('wood01', 'effects/wood01', 0.3, false, false);
@@ -48,7 +48,7 @@ var init = function init () {
     nest.position.y = helpers.getGlobalDisplacementAtPoint(0, 0, rng);
 
     renderer.infectDom('game');
-    renderer.addToScene(new THREE.HemisphereLight(0x303030, 0x202020, 1.05));
+    renderer.addToScene(new THREE.HemisphereLight(0x333333, 0x222222, 1.15));
     renderer.addToScene(nest.group);
 
     var ground = new Ground(rng);
@@ -161,7 +161,7 @@ var init = function init () {
                     var collidedPlayer = collisions[0].object.userData.player;
 
                     if (!collidedPlayer.rolling) { //invicible while rolling, that's the point
-                        renderer.shakeCamera(10, 18);
+                        renderer.shakeCamera(10, 20);
                         sound.play('hit02');
                         collidedPlayer.life--;
                     }

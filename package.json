@@ -6,6 +6,7 @@
   "scripts": {
     "check": "gulp codestyle && gulp lint",
     "build": "browserify src/main.js -d --s main -u crypto > build/main.js",
+    "prod": "browserify src/main.js --s main -u crypto > build/main.js",
     "watch": "watchify src/main.js --s main -u crypto -o build/main.js -v"
   },
   "author": "Kevin Chapelier",
