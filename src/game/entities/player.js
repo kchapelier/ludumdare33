@@ -105,7 +105,7 @@ Player.prototype.move = function (dt) {
         }
     }
 
-    /* */
+    /* /
     var speed = 9;
 
     if (this.accelerating) {

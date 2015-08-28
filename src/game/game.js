@@ -48,27 +48,56 @@ var init = function init () {
     nest.position.y = helpers.getGlobalDisplacementAtPoint(0, 0, rng);
 
     renderer.infectDom('game');
-    renderer.addToScene(new THREE.HemisphereLight(0x333333, 0x222222, 1.15));
+    renderer.addToScene(new THREE.HemisphereLight(0x333333, 0x222222, 3.15));
     renderer.addToScene(nest.group);
 
-    var ground = new Ground(rng);
+    var generateGround = function (rng) {
+        var mapSize = 5;
+        var map = {},
+            walls = {};
 
-    var waterGeometry = new THREE.PlaneGeometry();
-
-    var mapSize = 8;
-
-    for (var x = -mapSize; x <= mapSize; x++) {
-        for (var y = -mapSize; y <= mapSize; y++) {
-            ground.addTile(
-                x,
-                y,
-                x === -mapSize,
-                x === mapSize,
-                y === -mapSize,
-                y === mapSize
-            );
+        for (var x = -mapSize; x <= mapSize; x++) {
+            map[x] = {};
+            for (var y = -mapSize; y <= mapSize; y++) {
+                map[x][y] = (x===0 || y===0) || (Math.abs(x) === mapSize || Math.abs(y) === mapSize) || 0;
+            }
         }
-    }
+
+
+        for (var x = -mapSize; x <= mapSize; x++) {
+            walls[x] = {};
+            for (var y = -mapSize; y <= mapSize; y++) {
+                walls[x][y] = {
+                    left: !map[x-1] || !map[x-1][y],
+                    right: !map[x+1] || !map[x+1][y],
+                    front: !map[x] || !map[x][y-1],
+                    bottom: !map[x] || !map[x][y+1],
+                    leftFront: !map[x-1] || !map[x-1][y-1],
+                    rightFront: !map[x+1] || !map[x+1][y-1],
+                    leftBottom: !map[x-1] || !map[x-1][y+1],
+                    rightBottom: !map[x+1] || !map[x+1][y+1]
+                };
+            }
+        }
+
+        var ground = new Ground(rng);
+
+        for (var x = -mapSize; x <= mapSize; x++) {
+            for (var y = -mapSize; y <= mapSize; y++) {
+                if (map[x][y]) {
+                    ground.addTile(
+                        x,
+                        y,
+                        walls[x][y]
+                    );
+                }
+            }
+        }
+
+        return ground;
+    };
+
+    var ground = generateGround(rng);
 
     var spawnNewEnemy = function () {
         var x = (Math.random() - 0.5) * 2 * 8000,
@@ -83,13 +112,15 @@ var init = function init () {
         objectCollection.add('enemy', enemy);
     };
 
+    /*
     for (var i = 0; i < 3; i++) {
         spawnNewEnemy();
     }
 
     timerSpawn = setInterval(spawnNewEnemy, 1500);
+    */
 
-    var musicPlaying = sound.play('music');
+    //var musicPlaying = sound.play('music');
 
     var loop = new GameLoop();
     renderer.addToScene(ground.group);
@@ -224,8 +255,8 @@ var init = function init () {
 
 var game = {
     initialize: function () {
-        loadSounds();
-        loadTextures();
+        //loadSounds();
+        //loadTextures();
         init();
     }
 };

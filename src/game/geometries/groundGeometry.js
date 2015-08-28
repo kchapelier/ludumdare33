@@ -6,8 +6,8 @@ var THREE = require('three'),
 //TODO optimize the hell out of it
 
 module.exports = {
-    generate: function (width, height, x, y, rng, wallOnLeft, wallOnRight, wallOnFront, wallOnBottom) {
-        var details = 8,
+    generate: function (width, height, x, y, rng, walls) {
+        var details = 20,
             geometry = new THREE.PlaneGeometry(width, height, details - 1, details - 1),
             geometryClone = geometry.clone();
 
@@ -25,20 +25,36 @@ module.exports = {
 
             var wallSharpness = 5;
 
-            if (wallOnLeft) {
+            if (!!walls.left) {
                 wallCoeff+= Math.pow((details - 1 - (i % details)) / (details - 1), wallSharpness);
             }
 
-            if (wallOnRight) {
+            if (!!walls.right) {
                 wallCoeff += Math.pow((i % details) / (details - 1), wallSharpness);
             }
 
-            if (wallOnFront) {
+            if (!!walls.front) {
                 wallCoeff += Math.pow((details - 1 - Math.floor(i / details)) / (details - 1), wallSharpness);
             }
 
-            if (wallOnBottom) {
+            if (!!walls.bottom) {
                 wallCoeff += Math.pow(Math.floor(i / details) / (details - 1), wallSharpness);
+            }
+
+            if (!!walls.leftBottom) {
+                wallCoeff+= Math.pow(Math.floor(i / details) / (details - 1), wallSharpness) * Math.pow((details - 1 - (i % details)) / (details - 1), wallSharpness);
+            }
+
+            if (!!walls.rightBottom) {
+                wallCoeff+= Math.pow(Math.floor(i / details) / (details - 1), wallSharpness) * Math.pow((i % details) / (details - 1), wallSharpness);
+            }
+
+            if (!!walls.leftFront) {
+                wallCoeff+= Math.pow((details - 1 - Math.floor(i / details)) / (details - 1), wallSharpness) * Math.pow((details - 1 - (i % details)) / (details - 1), wallSharpness);
+            }
+
+            if (!!walls.rightFront) {
+                wallCoeff+= Math.pow((details - 1 - Math.floor(i / details)) / (details - 1), wallSharpness) * Math.pow((i % details) / (details - 1), wallSharpness);
             }
 
             wallCoeff = Math.min(1, wallCoeff);
