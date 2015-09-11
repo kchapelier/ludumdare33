@@ -52,16 +52,37 @@ var init = function init () {
     renderer.addToScene(nest.group);
 
     var generateGround = function (rng) {
-        var mapSize = 5;
+        var mapSize = 15;
         var map = {},
             walls = {};
 
+        var generateMaze = require('generate-maze-by-clustering');
+
+        var maze = generateMaze([mapSize, mapSize]);
+
+        var map = {};
+
+        maze.cells.forEach(function (cellLine, index) {
+            var row = {};
+
+            cellLine.forEach(function (cell, indexCol) {
+                row[indexCol - mapSize] = (cell instanceof maze.Square || cell instanceof maze.Wall && cell.isBroken);
+            });
+
+            map[index - mapSize] = row;
+        });
+
+        console.log(map);
+
+        console.log(maze.toText());
+        /*
         for (var x = -mapSize; x <= mapSize; x++) {
             map[x] = {};
             for (var y = -mapSize; y <= mapSize; y++) {
                 map[x][y] = (x===0 || y===0) || (Math.abs(x) === mapSize || Math.abs(y) === mapSize) || 0;
             }
         }
+        */
 
 
         for (var x = -mapSize; x <= mapSize; x++) {

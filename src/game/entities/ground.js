@@ -6,7 +6,8 @@ var tileWidth = 1000,
     tileHeight = 1000;
 
 var groundMaterial = new THREE.MeshLambertMaterial({
-    vertexColors: THREE.FaceColors,
+    //vertexColors: THREE.FaceColors,
+    color: 'white',
     fog: true,
     shading: THREE.NoShading,
     side: THREE.DoubleSide //FIXME this should not be used, this is a bug in groundGeometry

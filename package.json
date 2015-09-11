@@ -13,6 +13,7 @@
   "license": "MIT",
   "dependencies": {
     "chroma-js": "^1.1.1",
+    "generate-maze-by-clustering": "0.0.4",
     "howler": "^1.1.26",
     "is-array": "^1.0.1",
     "localforage": "^1.2.7",

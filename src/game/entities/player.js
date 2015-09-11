@@ -208,6 +208,7 @@ Player.prototype.update = function (dt) {
 
     //quick hack
 
+    /*
     if (this.position.x > 8300) {
         this.position.x = 8300;
     }
@@ -223,6 +224,7 @@ Player.prototype.update = function (dt) {
     if (this.position.z < -8300) {
         this.position.z = -8300;
     }
+    */
 };
 
 Player.prototype.postUpdate = function (dt) {

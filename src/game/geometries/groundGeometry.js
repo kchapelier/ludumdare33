@@ -5,13 +5,36 @@ var THREE = require('three'),
 
 //TODO optimize the hell out of it
 
+var mergeGeometries = function (geometry1, geometry2) {
+    var finalGeometry = new THREE.BufferGeometry();
+    finalGeometry.addAttribute('index', new THREE.BufferAttribute());
+    finalGeometry.addAttribute('normal', new THREE.BufferAttribute());
+    finalGeometry.addAttribute('color', new THREE.BufferAttribute());
+    finalGeometry.addAttribute('position', new THREE.BufferAttribute());
+    finalGeometry.addAttribute('index', new THREE.BufferAttribute());
+
+    return finalGeometry;
+};
+
+
 module.exports = {
     generate: function (width, height, x, y, rng, walls) {
-        var details = 20,
-            geometry = new THREE.PlaneGeometry(width, height, details - 1, details - 1),
+        var details = 8,
+            geometry = new THREE.PlaneBufferGeometry(width, height, details - 1, details - 1),
             geometryClone = geometry.clone();
 
-        for(var i = 0; i < geometry.vertices.length; i++) {
+        /*
+        var finalGeometry = mergeGeometries(geometry, geometryClone);
+
+        console.log(geometry, finalGeometry);
+        */
+
+        /*
+        console.log(geometry);
+
+        var vertexNumber = geometry.attributes.position.array.length / 3;
+
+        for(var i = 0; i < vertexNumber; i++) {
             var vertex = geometry.vertices[i],
                 cloneVertex = geometryClone.vertices[i];
 
@@ -77,19 +100,27 @@ module.exports = {
                 globalDisp + wallDisp * -1 + upDisp * Math.min(1, 1.5 - wallCoeff)
             ));
         }
+        */
+
+        /*
         geometryClone.doubleSided = true;
 
         geometry.computeFaceNormals();
         geometryClone.computeFaceNormals();
+        */
 
+        /*
         for (var i = 0; i < geometry.faces.length; i++) {
             var disp = Math.abs(rng.perlin2(Math.random() / 10 + geometry.faces[i].normal.x * 77., Math.random() / 10 + geometry.faces[i].normal.y * 77.));
             geometry.faces[i].color.setStyle(chroma('#388865').darken(disp * 0.5).saturate((1-disp) * 0.75 + 1).hex());
             geometryClone.faces[i].color.setStyle(chroma('#388865').darken(disp * 0.5).saturate((1-disp) * 0.75 + 1).hex());
         }
+        */
 
+        /*
         geometry.colorsNeedUpdate = true;
         geometryClone.colorsNeedUpdate = true;
+        */
 
         geometryClone.applyMatrix(new THREE.Matrix4().makeTranslation(0,0,500));
         geometry.merge(geometryClone);
